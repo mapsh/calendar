@@ -15,7 +15,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     DayPickerView dayPickerView;
-    Context context;
+    Context       context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         invalidDays.add(invalidDay1);
         invalidDays.add(invalidDay2);
         invalidDays.add(invalidDay3);
-       // dataModel.invalidDays = invalidDays;
+        // dataModel.invalidDays = invalidDays;
 
         List<MonthAdapter.CalendarDay> busyDays = new ArrayList<>();
         MonthAdapter.CalendarDay busyDay1 = new MonthAdapter.CalendarDay(2016, 8, 20);
@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         busyDays.add(busyDay1);
         busyDays.add(busyDay2);
         busyDays.add(busyDay3);
-       // dataModel.busyDays = busyDays;
+        // dataModel.busyDays = busyDays;
 
-       MonthAdapter.CalendarDay startDay = new MonthAdapter.CalendarDay(2017, 9, 20);
+        MonthAdapter.CalendarDay startDay = new MonthAdapter.CalendarDay(2017, 9, 20);
         MonthAdapter.CalendarDay endDay = new MonthAdapter.CalendarDay(2017, 9, 22);
         MonthAdapter.SelectedDays<MonthAdapter.CalendarDay> selectedDays = new MonthAdapter.SelectedDays<>(startDay, endDay);
         dataModel.selectedDays = selectedDays;

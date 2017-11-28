@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 日历定义的一些颜色 -->
-    <color name="calendar_normal_day">#ff999999</color>
+    <color name="calendar_normal_day">#454444</color>
+    <color name="calendar_previous_day">#B1B0B0</color>
     <color name="calendar_selected_day_background">#C2185B</color>
     <color name="calendar_selected_day_text">#FFFFFF</color>
     <color name="calendar_invalid_day_background">#c0c0c0</color>

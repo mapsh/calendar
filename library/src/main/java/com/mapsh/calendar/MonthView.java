@@ -137,7 +137,7 @@ class MonthView extends View {
         mWeekTextColor = typedArray.getColor(R.styleable.DayPickerView_colorWeekText, resources.getColor(R.color.calendar_normal_day));
 //        mDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorDayName, resources.getColor(R.color.normal_day));
         mDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorNormalDayText, resources.getColor(R.color.calendar_normal_day));
-        mPreviousDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorPreviousDayText, resources.getColor(R.color.calendar_normal_day));
+        mPreviousDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorPreviousDayText, resources.getColor(R.color.calendar_previous_day));
         mSelectedDaysBgColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayBackground, resources.getColor(R.color.calendar_selected_day_background));
         mSelectedDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorSelectedDayText, resources.getColor(R.color.calendar_selected_day_text));
         mBusyDaysBgColor = typedArray.getColor(R.styleable.DayPickerView_colorBusyDaysBg, Color.GRAY);
@@ -289,7 +289,7 @@ class MonthView extends View {
             if (!isPrevDayEnabled && prevDay(day, today)) {
                 isPrevDay = true;
                 mDayTextPaint.setColor(mPreviousDayTextColor);
-                mDayTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+                //mDayTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
                 canvas.drawText(String.format("%d", day), x, y, mDayTextPaint);
             }
 
