@@ -5,8 +5,7 @@ import java.util.List;
 public interface DatePickerController {
 
     enum FailEven {
-        CONTAIN_NO_SELECTED, CONTAIN_INVALID, NO_REACH_LEAST_DAYS, NO_REACH_MOST_DAYS, END_MT_START;
-
+        CONTAIN_NO_SELECTED, CONTAIN_INVALID, NO_REACH_LEAST_DAYS, NO_REACH_MOST_DAYS, END_MT_START
     }
 //	public abstract int getMaxYear();
 

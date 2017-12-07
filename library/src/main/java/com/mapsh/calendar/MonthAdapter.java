@@ -207,7 +207,7 @@ public class MonthAdapter
                 }
                 return;
             }
-            // 所选退房日期不能再入住日期之前
+            // 所选退房日期不能在入住日期之前
             if (calendarDay.getDate().before(rangeDays.getFirst().getDate())) {
                 if (mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.END_MT_START);
@@ -217,14 +217,14 @@ public class MonthAdapter
 
             int dayDiff = dateDiff(rangeDays.getFirst(), calendarDay);
             // 所选的日期范围不能小于最小限制
-            if (dayDiff > 1 && mLeastDaysNum > dayDiff) {
+            if (dayDiff >= 1 && mLeastDaysNum > dayDiff) {
                 if (mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.NO_REACH_LEAST_DAYS);
                 }
                 return;
             }
             // 所选日期范围不能大于最大限制
-            if (dayDiff > 1 && mMostDaysNum < dayDiff) {
+            if (dayDiff >= 1 && mMostDaysNum < dayDiff) {
                 if (mController != null) {
                     mController.alertSelectedFail(DatePickerController.FailEven.NO_REACH_MOST_DAYS);
                 }

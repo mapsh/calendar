@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         dataModel.monthStart = 9;
         dataModel.monthCount = 3;
         dataModel.defTag = "";
-        dataModel.leastDaysNum = 1;
+        dataModel.leastDaysNum = 2;
         dataModel.mostDaysNum = 30;
 
         List<MonthAdapter.CalendarDay> invalidDays = new ArrayList<>();
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDateRangeSelected(List<MonthAdapter.CalendarDay> selectedDays) {
-                Toast.makeText(context, "onDateRangeSelected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "onDateRangeSelected: " + selectedDays.size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
