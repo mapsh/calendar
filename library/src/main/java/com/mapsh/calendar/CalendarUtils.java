@@ -3,6 +3,7 @@ package com.mapsh.calendar;
 import android.support.annotation.IntRange;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 日期工具类
@@ -49,4 +50,18 @@ class CalendarUtils {
     private static boolean isLeapYear(@IntRange(from = 1970) int year) {
         return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
     }
+
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        Calendar calDateA = Calendar.getInstance();
+        calDateA.setTime(date1);
+
+        Calendar calDateB = Calendar.getInstance();
+        calDateB.setTime(date2);
+
+        return calDateA.get(Calendar.YEAR) == calDateB.get(Calendar.YEAR)
+                && calDateA.get(Calendar.MONTH) == calDateB.get(Calendar.MONTH)
+                && calDateA.get(Calendar.DAY_OF_MONTH) == calDateB.get(Calendar.DAY_OF_MONTH);
+    }
+
 }
