@@ -2,6 +2,7 @@ package com.mapsh.calendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @author mapsh
+ */
 public class MonthAdapter
         extends RecyclerView.Adapter<MonthAdapter.ViewHolder>
         implements MonthView.OnDayClickListener {
@@ -119,9 +123,9 @@ public class MonthAdapter
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         final MonthView v = viewHolder.monthView;
-        final HashMap<String, Object> drawingParams = new HashMap<String, Object>();
+        final HashMap<String, Object> drawingParams = new HashMap<>();
         int month;          // 月份
         int year;           // 年份
 
@@ -143,6 +147,7 @@ public class MonthAdapter
         v.invalidate();
     }
 
+    @Override
     public long getItemId(int position) {
         return position;
     }

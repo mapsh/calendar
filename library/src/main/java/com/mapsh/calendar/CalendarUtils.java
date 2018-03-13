@@ -1,12 +1,22 @@
 package com.mapsh.calendar;
 
+import android.support.annotation.IntRange;
+
 import java.util.Calendar;
 
 /**
  * 日期工具类
+ *
+ * @author mapsh
  */
-public class CalendarUtils {
-    public static int getDaysInMonth(int month, int year) {
+class CalendarUtils {
+
+    /**
+     * @param month 月份
+     * @param year  年份
+     * @return 返回月份有多少天
+     */
+    static int getDaysInMonth(@IntRange(from = Calendar.JANUARY, to = Calendar.DECEMBER) int month, @IntRange(from = 1970) int year) {
         switch (month) {
             case Calendar.JANUARY:
             case Calendar.MARCH:
@@ -22,9 +32,21 @@ public class CalendarUtils {
             case Calendar.NOVEMBER:
                 return 30;
             case Calendar.FEBRUARY:
-                return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) ? 29 : 28;
+                if (isLeapYear(year)) {
+                    return 29;
+                } else {
+                    return 28;
+                }
             default:
                 throw new IllegalArgumentException("Invalid Month");
         }
+    }
+
+    /**
+     * 判断年份是否为闰年
+     * 判断闰年的条件， 能被4整除同时不能被100整除，或者能被400整除
+     */
+    private static boolean isLeapYear(@IntRange(from = 1970) int year) {
+        return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
     }
 }

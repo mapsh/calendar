@@ -12,6 +12,6 @@
         android:layout_height="match_parent"
 
         app:selectedDayRadius="20dp"
-        app:calendarHeight="320dp"
+
         app:enablePreviousDay="false"/>
 </RelativeLayout>

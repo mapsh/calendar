@@ -10,6 +10,9 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author mapsh
+ */
 public class DayPickerView extends RecyclerView {
     protected Context mContext;
     protected MonthAdapter mAdapter;

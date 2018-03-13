@@ -2,6 +2,9 @@ package com.mapsh.calendar;
 
 import java.util.List;
 
+/**
+ * @author mapsh
+ */
 public interface DatePickerController {
 
     enum FailEven {

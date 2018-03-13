@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.format.DateUtils;
@@ -19,6 +20,8 @@ import android.view.View;
 import java.security.InvalidParameterException;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -30,23 +33,23 @@ import java.util.Locale;
 class MonthView extends View {
 
     public static final String VIEW_PARAMS_SELECTED_BEGIN_DATE = "selected_begin_date";
-    public static final String VIEW_PARAMS_SELECTED_LAST_DATE = "selected_last_date";
-    public static final String VIEW_PARAMS_NEAREST_DATE = "mNearestDay";
+    public static final String VIEW_PARAMS_SELECTED_LAST_DATE  = "selected_last_date";
+    public static final String VIEW_PARAMS_NEAREST_DATE        = "mNearestDay";
 
-//    public static final String VIEW_PARAMS_HEIGHT = "height";
-    public static final String VIEW_PARAMS_MONTH = "month";
-    public static final String VIEW_PARAMS_YEAR = "year";
+    //    public static final String VIEW_PARAMS_HEIGHT = "height";
+    public static final String VIEW_PARAMS_MONTH      = "month";
+    public static final String VIEW_PARAMS_YEAR       = "year";
     public static final String VIEW_PARAMS_WEEK_START = "week_start";
 
-    private static final int SELECTED_CIRCLE_ALPHA = 128;
-    protected static int DEFAULT_HEIGHT = 32;                           // 默认一行的高度
-    protected static final int DEFAULT_NUM_ROWS = 6;
+    private static final   int SELECTED_CIRCLE_ALPHA = 128;
+    protected static       int DEFAULT_HEIGHT        = 48;                           // 默认一行的高度
+    protected static final int DEFAULT_NUM_ROWS      = 6;
     protected static int DAY_SELECTED_RECT_SIZE;                        // 选中圆角矩形半径
-    protected static int ROW_SEPARATOR = 12;                            // 每行中间的间距
+    protected static int ROW_SEPARATOR = 0;                            // 每行中间的间距
     protected static int MINI_DAY_NUMBER_TEXT_SIZE;                     // 日期字体的最小尺寸
-    private static int TAG_TEXT_SIZE;                                   // 标签字体大小
+    private static   int TAG_TEXT_SIZE;                                   // 标签字体大小
     protected static int MIN_HEIGHT = 10;                               // 最小高度
-//    protected static int MONTH_DAY_LABEL_TEXT_SIZE;                   // 头部的星期几的字体大小
+    //    protected static int MONTH_DAY_LABEL_TEXT_SIZE;                   // 头部的星期几的字体大小
     protected static int MONTH_HEADER_SIZE;                             // 头部的高度（包括年份月份，星期几）
     protected static int YEAR_MONTH_TEXT_SIZE;                          // 头部年份月份的字体大小
     protected static int WEEK_TEXT_SIZE;                                // 头部年份月份的字体大小
@@ -55,11 +58,11 @@ class MonthView extends View {
 
     private List<MonthAdapter.CalendarDay> mInvalidDays;          // 禁用的日期
     private List<MonthAdapter.CalendarDay> mBusyDays;             // 被占用的日期
-    private MonthAdapter.CalendarDay mNearestDay;                 // 比离入住日期大且是最近的已被占用或者无效日期
+    private MonthAdapter.CalendarDay       mNearestDay;                 // 比离入住日期大且是最近的已被占用或者无效日期
     private List<MonthAdapter.CalendarDay> mCalendarTags;         // 日期下面的标签
     private String mDefTag = "标签";
 
-    protected int mPadding = 0;
+    protected int mPadding = 10;
 
     private String mDayOfWeekTypeface;
     private String mMonthTitleTypeface;
@@ -67,44 +70,55 @@ class MonthView extends View {
     protected Paint mWeekTextPaint;                     // 头部星期几的字体画笔
     protected Paint mDayTextPaint;
     protected Paint mTagTextPaint;                      // 日期底部的文字画笔
-//    protected Paint mTitleBGPaint;
+    //    protected Paint mTitleBGPaint;
     protected Paint mYearMonthPaint;                    // 头部的画笔
+
+    /**
+     * 被选中日期区间 Paint
+     */
     protected Paint mSelectedDayBgPaint;
+    /**
+     * 被选中日期区间两端 Paint
+     */
+    protected Paint mSelectedDayBothEndsBgPaint;
     protected Paint mBusyDayBgPaint;
     protected Paint mInValidDayBgPaint;
-//    protected Paint mSelectedDayTextPaint;
-    protected int mCurrentDayTextColor;                 // 今天的字体颜色
-    protected int mYearMonthTextColor;                  // 头部年份和月份字体颜色
-    protected int mWeekTextColor;                       // 头部星期几字体颜色
-//    protected int mDayTextColor;
-    protected int mDayTextColor;                        // 日期字体颜色
-    protected int mSelectedDayTextColor;                // 被选中的日期字体颜色
-    protected int mPreviousDayTextColor;                // 过去的字体颜色
-    protected int mSelectedDaysBgColor;                 // 选中的日期背景颜色
-    protected int mBusyDaysBgColor;                     // 被占用的日期背景颜色
-    protected int mInValidDaysBgColor;                  // 禁用的日期背景颜色
-    protected int mBusyDaysTextColor;                     // 被占用的日期字体颜色
-    protected int mInValidDaysTextColor;                  // 禁用的日期字体颜色
+    //    protected Paint mSelectedDayTextPaint;
+    protected int   mCurrentDayTextColor;                 // 今天的字体颜色
+    protected int   mYearMonthTextColor;                  // 头部年份和月份字体颜色
+    protected int   mWeekTextColor;                       // 头部星期几字体颜色
+    //    protected int mDayTextColor;
+    protected int   mDayTextColor;                        // 日期字体颜色
+    protected int   mSelectedDayTextColor;                // 被选中的日期字体颜色
+    protected int   mPreviousDayTextColor;                // 过去的字体颜色
+    protected int   mSelectedDaysBgColor;                 // 选中的日期背景颜色
+    protected int   mBusyDaysBgColor;                     // 被占用的日期背景颜色
+    protected int   mInValidDaysBgColor;                  // 禁用的日期背景颜色
+    protected int   mBusyDaysTextColor;                     // 被占用的日期字体颜色
+    protected int   mInValidDaysTextColor;                  // 禁用的日期字体颜色
 
     private final StringBuilder mStringBuilder;
 
-    protected boolean mHasToday = false;
-    protected int mToday = -1;
-    protected int mWeekStart = 1;               // 一周的第一天（不同国家的一星期的第一天不同）
-    protected int mNumDays = 7;                 // 一行几列
-    protected int mNumCells;                    // 一个月有多少天
-    private int mDayOfWeekStart = 0;            // 日期对应星期几
-//    protected Boolean mDrawRect;              // 圆角还是圆形
-    protected int mRowHeight = DEFAULT_HEIGHT;  // 行高
+    protected boolean mHasToday  = false;
+    protected int     mToday     = -1;
+    protected int     mWeekStart = 1;               // 一周的第一天（不同国家的一星期的第一天不同）
+    protected int     mNumDays   = 7;                 // 一行几列
+    /**
+     * 一个月有多少天
+     */
+    protected int mNumCells;
+    private   int mDayOfWeekStart = 0;            // 日期对应星期几
+    //    protected Boolean mDrawRect;              // 圆角还是圆形
+    protected int mRowHeight      = DEFAULT_HEIGHT;  // 行高
     protected int mWidth;                       // simpleMonthView的宽度
 
-    protected int mYear;
-    protected int mMonth;
-    final Time today;
+    protected int               mYear;
+    protected int               mMonth;
+    final     GregorianCalendar today;
 
     private final Calendar mCalendar;
     private final Calendar mDayLabelCalendar;           // 用于显示星期几
-    private final Boolean isPrevDayEnabled;             // 今天以前的日期是否能被操作
+    private final Boolean  isPrevDayEnabled;             // 今天以前的日期是否能被操作
 
     private int mNumRows;
 
@@ -112,8 +126,14 @@ class MonthView extends View {
 
     private OnDayClickListener mOnDayClickListener;
 
-    MonthAdapter.CalendarDay mStartDate;          // 入住日期
-    MonthAdapter.CalendarDay mEndDate;            // 退房日期
+    /**
+     * 入住日期
+     */
+    private Date mStartDate;
+    /**
+     * 离店日期
+     */
+    private Date mEndDate;
 
     MonthAdapter.CalendarDay cellCalendar;        // cell的对应的日期
 
@@ -128,8 +148,7 @@ class MonthView extends View {
         Resources resources = context.getResources();
         mDayLabelCalendar = Calendar.getInstance();
         mCalendar = Calendar.getInstance();
-        today = new Time(Time.getCurrentTimezone());
-        today.setToNow();
+        today = new GregorianCalendar();
         mDayOfWeekTypeface = resources.getString(R.string.sans_serif);
         mMonthTitleTypeface = resources.getString(R.string.sans_serif);
         mCurrentDayTextColor = typedArray.getColor(R.styleable.DayPickerView_colorCurrentDay, resources.getColor(R.color.calendar_normal_day));
@@ -236,7 +255,7 @@ class MonthView extends View {
     }
 
     private void onDayClick(MonthAdapter.CalendarDay calendarDay) {
-        if (mOnDayClickListener != null && (isPrevDayEnabled || !prevDay(calendarDay.day, today))) {
+        if (mOnDayClickListener != null && (isPrevDayEnabled || !beforeToday(calendarDay.day, today))) {
             mOnDayClickListener.onDayClick(this, calendarDay);
         }
     }
@@ -252,9 +271,10 @@ class MonthView extends View {
      * @param time
      * @return
      */
-    private boolean prevDay(int monthDay, Time time) {
-        return ((mYear < time.year)) || (mYear == time.year && mMonth < time.month) ||
-                (mYear == time.year && mMonth == time.month && monthDay < time.monthDay);
+    private boolean beforeToday(int monthDay, Calendar time) {
+        return ((mYear < time.year))
+                || (mYear == time.year && mMonth < time.month)
+                || (mYear == time.year && mMonth == time.month && monthDay < time.monthDay);
     }
 
     /**
@@ -265,12 +285,14 @@ class MonthView extends View {
     protected void drawMonthDay(Canvas canvas) {
         // ?
         int y = MONTH_HEADER_SIZE + ROW_SEPARATOR + mRowHeight / 2;
-        int paddingDay = (mWidth - 2 * mPadding) / (2 * mNumDays);
+        //列宽
+        int rowWidth = mWidth / mNumDays;
+        int paddingDay = (mWidth / mNumDays);
         int dayOffset = findDayOffset();
         int day = 1;
 
         while (day <= mNumCells) {
-            int x = paddingDay * (1 + dayOffset * 2) + mPadding;
+            int x = rowWidth * (dayOffset) + (int) (0.5 * rowWidth);
 
             mDayTextPaint.setColor(mDayTextColor);
             mDayTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
@@ -278,30 +300,32 @@ class MonthView extends View {
 
             cellCalendar.setDay(mYear, mMonth, day);
 
+
             // 当天
             boolean isToady = false;
             if (mHasToday && (mToday == day)) {
                 isToady = true;
-                canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y), mDayTextPaint);
             }
             // 已过去的日期
             boolean isPrevDay = false;
-            if (!isPrevDayEnabled && prevDay(day, today)) {
+
+            if (!isPrevDayEnabled && beforeToday(day, today)) {
                 isPrevDay = true;
                 mDayTextPaint.setColor(mPreviousDayTextColor);
-                //mDayTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
-                canvas.drawText(String.format("%d", day), x, y, mDayTextPaint);
+                canvas.drawText(String.format(Locale.CHINA, "%d", day), x, getTextYCenter(mDayTextPaint, y), mDayTextPaint);
             }
 
             boolean isBeginDay = false;
             // 绘制起始日期的方格
             if (mStartDate != null && cellCalendar.equals(mStartDate) && !mStartDate.equals(mEndDate)) {
                 isBeginDay = true;
-                drawDayBg(canvas, x, y, mSelectedDayBgPaint);
+                //drawDayBg(canvas, x, y, mSelectedDayBgPaint);
+                drawDayLeftIntervalBg(canvas, x, y);
                 mDayTextPaint.setColor(mSelectedDayTextColor);
                 canvas.drawText("入住", x, getTextYCenter(mDayTextPaint, y + DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
-                if(isToady) {
-                    canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y - DAY_SELECTED_RECT_SIZE / 2), mDayTextPaint);
+                if (isToady) {
+                    canvas.drawText("今天", x, getTextYCenter(mDayTextPaint, y), mDayTextPaint);
                 }
             }
 
@@ -424,6 +448,7 @@ class MonthView extends View {
 
     /**
      * 根据坐标获取对应的日期
+     *
      * @param x
      * @param y
      * @return
@@ -437,9 +462,9 @@ class MonthView extends View {
         int yDay = (int) (y - MONTH_HEADER_SIZE) / mRowHeight;
         int day = 1 + ((int) ((x - padding) * mNumDays / (mWidth - padding - mPadding)) - findDayOffset()) + yDay * mNumDays;
 
-        if (mMonth > 11 || mMonth < 0 || CalendarUtils.getDaysInMonth(mMonth, mYear) < day || day < 1)
+        if (mMonth > 11 || mMonth < 0 || CalendarUtils.getDaysInMonth(mMonth, mYear) < day || day < 1) {
             return null;
-
+        }
         MonthAdapter.CalendarDay calendar = new MonthAdapter.CalendarDay(mYear, mMonth, day);
 
         // 获取日期下面的tag
@@ -488,11 +513,21 @@ class MonthView extends View {
 //        mTitleBGPaint.setTextAlign(Align.CENTER);
 //        mTitleBGPaint.setStyle(Style.FILL);
 
+
+        // 被选中的日期左右区间背景paint
+        mSelectedDayBothEndsBgPaint = new Paint();
+        mSelectedDayBothEndsBgPaint.setFakeBoldText(true);
+        mSelectedDayBothEndsBgPaint.setAntiAlias(true);
+        mSelectedDayBothEndsBgPaint.setColor(getContext().getResources().getColor(R.color.date_range_picker_selected_both_ends));
+        mSelectedDayBothEndsBgPaint.setTextAlign(Align.CENTER);
+        mSelectedDayBothEndsBgPaint.setStyle(Style.FILL);
+        mSelectedDayBothEndsBgPaint.setAlpha(SELECTED_CIRCLE_ALPHA);
+
         // 被选中的日期背景paint
         mSelectedDayBgPaint = new Paint();
         mSelectedDayBgPaint.setFakeBoldText(true);
         mSelectedDayBgPaint.setAntiAlias(true);
-        mSelectedDayBgPaint.setColor(mSelectedDaysBgColor);
+        mSelectedDayBgPaint.setColor(Color.parseColor("#CFF2EE"));
         mSelectedDayBgPaint.setTextAlign(Align.CENTER);
         mSelectedDayBgPaint.setStyle(Style.FILL);
         mSelectedDayBgPaint.setAlpha(SELECTED_CIRCLE_ALPHA);
@@ -516,16 +551,6 @@ class MonthView extends View {
         mInValidDayBgPaint.setTextAlign(Align.CENTER);
         mInValidDayBgPaint.setStyle(Style.FILL);
         mInValidDayBgPaint.setAlpha(SELECTED_CIRCLE_ALPHA);
-
-//        // 被选中的日期字体paint
-//        mSelectedDayTextPaint = new Paint();
-//        mSelectedDayTextPaint.setAntiAlias(true);
-//        mSelectedDayTextPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
-//        mSelectedDayTextPaint.setColor(Color.WHITE);
-//        mSelectedDayTextPaint.setTypeface(Typeface.create(mDayOfWeekTypeface, Typeface.NORMAL));
-//        mSelectedDayTextPaint.setStyle(Style.FILL);
-//        mSelectedDayTextPaint.setTextAlign(Align.CENTER);
-//        mSelectedDayTextPaint.setFakeBoldText(true);
 
         // 日期字体paint
         mDayTextPaint = new Paint();
@@ -559,10 +584,12 @@ class MonthView extends View {
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mRowHeight * mNumRows + MONTH_HEADER_SIZE + ROW_SEPARATOR);
     }
 
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mWidth = w;
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             MonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
@@ -589,34 +616,24 @@ class MonthView extends View {
         return true;
     }
 
-//    public void reuse() {
-//        mNumRows = DEFAULT_NUM_ROWS;
-//        requestLayout();
-//    }
-
     /**
      * 设置传递进来的参数
      *
      * @param params
      */
+    @SuppressWarnings("AlibabaRemoveCommentedCode")
     public void setMonthParams(HashMap<String, Object> params) {
         if (!params.containsKey(VIEW_PARAMS_MONTH) && !params.containsKey(VIEW_PARAMS_YEAR)) {
             throw new InvalidParameterException("You must specify month and year for this view");
         }
         setTag(params);
 
-//        if (params.containsKey(VIEW_PARAMS_HEIGHT)) {
-//            mRowHeight = (int) params.get(VIEW_PARAMS_HEIGHT);
-//            if (mRowHeight < MIN_HEIGHT) {
-//                mRowHeight = MIN_HEIGHT;
-//            }
-//        }
 
         if (params.containsKey(VIEW_PARAMS_SELECTED_BEGIN_DATE)) {
-            mStartDate = (MonthAdapter.CalendarDay) params.get(VIEW_PARAMS_SELECTED_BEGIN_DATE);
+           // mStartDate = (MonthAdapter.CalendarDay) params.get(VIEW_PARAMS_SELECTED_BEGIN_DATE);
         }
         if (params.containsKey(VIEW_PARAMS_SELECTED_LAST_DATE)) {
-            mEndDate = (MonthAdapter.CalendarDay) params.get(VIEW_PARAMS_SELECTED_LAST_DATE);
+          //  mEndDate = (MonthAdapter.CalendarDay) params.get(VIEW_PARAMS_SELECTED_LAST_DATE);
         }
 
         if (params.containsKey("mNearestDay")) {
@@ -668,21 +685,58 @@ class MonthView extends View {
      * @param y
      */
     private void drawDayBg(Canvas canvas, int x, int y, Paint paint) {
-        RectF rectF = new RectF(x - DAY_SELECTED_RECT_SIZE, y - DAY_SELECTED_RECT_SIZE,
-                x + DAY_SELECTED_RECT_SIZE, y + DAY_SELECTED_RECT_SIZE);
-        canvas.drawRoundRect(rectF, 10.0f, 10.0f, paint);
+        RectF rectF = new RectF(x - mWidth / 14, y - 100,
+                x + mWidth / 14, y + 100);
+        canvas.drawRoundRect(rectF, 0.0f, 0.0f, paint);
     }
 
     /**
-     * 在使用drawText方法时文字不能根据y坐标居中，所以重新计算y坐标
-     * @param paint
+     * 绘制左区间
+     *
+     * @param canvas
+     * @param x
      * @param y
+     */
+    private void drawDayLeftIntervalBg(Canvas canvas, int x, int y) {
+        RectF rectF = new RectF(x - mWidth / 14, y - 100,
+                x + mWidth / 14, y + 100);
+
+        float[] radii = {15f, 15f, 0f, 0f, 0f, 0f, 15f, 15f};
+        Path path = new Path();
+        path.addRoundRect(rectF, radii, Path.Direction.CW);
+
+        canvas.drawPath(path, mSelectedDayBothEndsBgPaint);
+    }
+
+    /**
+     * 绘制右区间
+     *
+     * @param canvas
+     * @param x
+     * @param y
+     */
+    private void drawDayRightIntervalBg(Canvas canvas, int x, int y) {
+        RectF rectF = new RectF(x - mWidth / 14, y - 100,
+                x + mWidth / 14, y + 100);
+
+        float[] radii = {0f, 0f, 15f, 15f, 15f, 150f, 0f, 0f};
+        Path path = new Path();
+        path.addRoundRect(rectF, radii, Path.Direction.CW);
+
+        canvas.drawPath(path, mSelectedDayBothEndsBgPaint);
+    }
+
+    /**
+     * http://blog.csdn.net/u014702653/article/details/51985821
+     * <p>
+     * 在使用drawText方法时文字不能根据y坐标居中，所以重新计算y坐标
+     *
+     * @param paint 画笔
+     * @param y     单元格1/2高度相对于屏幕的像素值
      * @return
      */
     private float getTextYCenter(Paint paint, int y) {
-        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-        float fontTotalHeight = fontMetrics.bottom - fontMetrics.top;
-        float offY = fontTotalHeight / 2 - fontMetrics.bottom;
-        return y + offY;
+        Paint.FontMetrics fm = paint.getFontMetrics();
+        return y - fm.descent + (fm.bottom - fm.top) / 2;
     }
 }

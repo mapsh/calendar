@@ -6,4 +6,6 @@
     <color name="calendar_selected_day_background">#C2185B</color>
     <color name="calendar_selected_day_text">#FFFFFF</color>
     <color name="calendar_invalid_day_background">#c0c0c0</color>
+    <color name="date_range_picker_selected_both_ends">#10ab96</color>
+    <color name="date_range_picker_selected_aros">#10ab96</color>
 </resources>

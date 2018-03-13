@@ -22,41 +22,5 @@
         <attr name="selectedDayRadius" format="dimension" />         <!-- 日期半径 -->
         <attr name="calendarHeight" format="dimension" />            <!-- 行高 -->
         <attr name="enablePreviousDay" format="boolean" />           <!-- 已过去的日期是否能被操作 -->
-        <!--<attr name="drawRoundRect" format="boolean" />-->
-        <!--<attr name="leastsSeleDaysNum" format="integer" />-->
-        <!--<attr name="mostSeleDaysNum" format="integer" />-->
-        <!--<attr name="type" format="enum">
-                    <enum name="multiChoice" value="0" />
-                    <enum name="range" value="1" />
-                    <enum name="onlyRead" value="2" />
-                </attr>-->
-        <!--<attr name="firstMonth" format="enum">
-                    <enum name="january" value="0" />
-                    <enum name="february" value="1" />
-                    <enum name="march" value="2" />
-                    <enum name="april" value="3" />
-                    <enum name="may" value="4" />
-                    <enum name="june" value="5" />
-                    <enum name="july" value="6" />
-                    <enum name="august" value="7" />
-                    <enum name="september" value="8" />
-                    <enum name="october" value="9" />
-                    <enum name="november" value="10" />
-                    <enum name="december" value="11" />
-                </attr>
-                <attr name="lastMonth" format="enum">
-                    <enum name="january" value="0" />
-                    <enum name="february" value="1" />
-                    <enum name="march" value="2" />
-                    <enum name="april" value="3" />
-                    <enum name="may" value="4" />
-                    <enum name="june" value="5" />
-                    <enum name="july" value="6" />
-                    <enum name="august" value="7" />
-                    <enum name="september" value="8" />
-                    <enum name="october" value="9" />
-                    <enum name="november" value="10" />
-                    <enum name="december" value="11" />
-                </attr>-->
     </declare-styleable>
 </resources>
